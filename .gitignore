@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+.env
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Raw PDFs — large binary files; revisit once ingestion pipeline exists
+# and repo size / arXiv redistribution concerns are evaluated
+data/raw_pdfs/*.pdf
+
+# Secrets / local overrides
+.env.local
+
+# Docker
+.dockerignore
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Eval artifacts — keep templates + report; gitignore intermediate JSON dumps
+src/research_assistant/eval/eval_report_raw_*.json

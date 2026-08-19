@@ -1,0 +1,279 @@
+[
+  {
+    "arxiv_id": "2104.10645v1",
+    "title": "Measuring what Really Matters: Optimizing Neural Networks for TinyML",
+    "authors": [
+      "Lennart Heim",
+      "Andreas Biri",
+      "Zhongnan Qu",
+      "Lothar Thiele"
+    ],
+    "abstract": "With the surge of inexpensive computational and memory resources, neural networks (NNs) have experienced an unprecedented growth in architectural and computational complexity. Introducing NNs to resource-constrained devices enables cost-efficient deployments, widespread availability, and the preservation of sensitive data. This work addresses the challenges of bringing Machine Learning to MCUs, where we focus on the ubiquitous ARM Cortex-M architecture. The detailed effects and trade-offs that optimization methods, software frameworks, and MCU hardware architecture have on key performance metrics such as inference latency and energy consumption have not been previously studied in depth for state-of-the-art frameworks such as TensorFlow Lite Micro. We find that empirical investigations which measure the perceptible metrics - performance as experienced by the user - are indispensable, as the impact of specialized instructions and layer types can be subtle. To this end, we propose an implementation-aware design as a cost-effective method for verification and benchmarking. Employing our developed toolchain, we demonstrate how existing NN deployments on resource-constrained devices can be improved by systematically optimizing NNs to their targeted application scenario.",
+    "published": "2021-04-21",
+    "categories": [
+      "cs.LG"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2104.10645v1",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2104.10645v1.pdf",
+    "download_date": "2026-08-19T21:42:42.938994+00:00"
+  },
+  {
+    "arxiv_id": "1801.06601v1",
+    "title": "CMSIS-NN: Efficient Neural Network Kernels for Arm Cortex-M CPUs",
+    "authors": [
+      "Liangzhen Lai",
+      "Naveen Suda",
+      "Vikas Chandra"
+    ],
+    "abstract": "Deep Neural Networks are becoming increasingly popular in always-on IoT edge devices performing data analytics right at the source, reducing latency as well as energy consumption for data communication. This paper presents CMSIS-NN, efficient kernels developed to maximize the performance and minimize the memory footprint of neural network (NN) applications on Arm Cortex-M processors targeted for intelligent IoT edge devices. Neural network inference based on CMSIS-NN kernels achieves 4.6X improvement in runtime/throughput and 4.9X improvement in energy efficiency.",
+    "published": "2018-01-19",
+    "categories": [
+      "cs.NE",
+      "cs.LG",
+      "cs.MS"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/1801.06601v1",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/1801.06601v1.pdf",
+    "download_date": "2026-08-19T21:42:02.890791+00:00"
+  },
+  {
+    "arxiv_id": "2512.09786v2",
+    "title": "TinyD\u00e9j\u00e0Vu: Smaller RAM and Faster Inference with Neural Networks on MCUs for Sensor Data Streams",
+    "authors": [
+      "Zhaolan Huang",
+      "Emmanuel Baccelli"
+    ],
+    "abstract": "Examples of embedded intelligence include a wide variety of tiny neural networks used on-board wireless sensors and actuators, which are expected to continuously perform inference on time-series of the data they sense. In order to fit lifetime and energy consumption requirements when operating on battery, such hardware is exclusively based on microcontroller with as little memory as possible, e.g., 128 kB of RAM. In this context, optimizing data flows during inference across neural network layers becomes crucial. In this paper, we introduce a new framework, TinyD\u00e9j\u00e0Vu, and novel algorithms we designed to drastically reduce the RAM budget required by inference using various neural network models for sensor data time-series on typical microcontroller hardware. We publish the implementation of TinyD\u00e9j\u00e0Vu as open source, and we perform reproducible benchmarks on common microcontroller hardware (Arm Cortex-M). We show that TinyD\u00e9j\u00e0Vu can save up to 90\\% of RAM usage with equal compute latency compared to prior work (StreamiNNC) on overlapping sliding window inputs.",
+    "published": "2025-12-10",
+    "categories": [
+      "cs.LG",
+      "cs.PF",
+      "cs.SD",
+      "eess.AS",
+      "eess.SP"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2512.09786v2",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2512.09786v2.pdf",
+    "download_date": "2026-08-19T21:42:30.297782+00:00"
+  },
+  {
+    "arxiv_id": "2010.11267v6",
+    "title": "MicroNets: Neural Network Architectures for Deploying TinyML Applications on Commodity Microcontrollers",
+    "authors": [
+      "Colby Banbury",
+      "Chuteng Zhou",
+      "Igor Fedorov",
+      "Ramon Matas Navarro",
+      "Urmish Thakker",
+      "Dibakar Gope",
+      "Vijay Janapa Reddi",
+      "Matthew Mattina",
+      "Paul N. Whatmough"
+    ],
+    "abstract": "Executing machine learning workloads locally on resource constrained microcontrollers (MCUs) promises to drastically expand the application space of IoT. However, so-called TinyML presents severe technical challenges, as deep neural network inference demands a large compute and memory budget. To address this challenge, neural architecture search (NAS) promises to help design accurate ML models that meet the tight MCU memory, latency and energy constraints. A key component of NAS algorithms is their latency/energy model, i.e., the mapping from a given neural network architecture to its inference latency/energy on an MCU. In this paper, we observe an intriguing property of NAS search spaces for MCU model design: on average, model latency varies linearly with model operation (op) count under a uniform prior over models in the search space. Exploiting this insight, we employ differentiable NAS (DNAS) to search for models with low memory usage and low op count, where op count is treated as a viable proxy to latency. Experimental results validate our methodology, yielding our MicroNet models, which we deploy on MCUs using Tensorflow Lite Micro, a standard open-source NN inference runtime widely used in the TinyML community. MicroNets demonstrate state-of-the-art results for all three TinyMLperf industry-standard benchmark tasks: visual wake words, audio keyword spotting, and anomaly detection. Models and training scripts can be found at github.com/ARM-software/ML-zoo.",
+    "published": "2020-10-21",
+    "categories": [
+      "cs.LG"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2010.11267v6",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2010.11267v6.pdf",
+    "download_date": "2026-08-19T21:42:14.256700+00:00"
+  },
+  {
+    "arxiv_id": "2211.17246v2",
+    "title": "Pex: Memory-efficient Microcontroller Deep Learning through Partial Execution",
+    "authors": [
+      "Edgar Liberis",
+      "Nicholas D. Lane"
+    ],
+    "abstract": "Embedded and IoT devices, largely powered by microcontroller units (MCUs), could be made more intelligent by leveraging on-device deep learning. One of the main challenges of neural network inference on an MCU is the extremely limited amount of read-write on-chip memory (SRAM, < 512 kB). SRAM is consumed by the neural network layer (operator) input and output buffers, which, traditionally, must be in memory (materialised) for an operator to execute. We discuss a novel execution paradigm for microcontroller deep learning, which modifies the execution of neural networks to avoid materialising full buffers in memory, drastically reducing SRAM usage with no computation overhead. This is achieved by exploiting the properties of operators, which can consume/produce a fraction of their input/output at a time. We describe a partial execution compiler, Pex, which produces memory-efficient execution schedules automatically by identifying subgraphs of operators whose execution can be split along the feature (\"channel\") dimension. Memory usage is reduced further by targeting memory bottlenecks with structured pruning, leading to the co-design of the network architecture and its execution schedule. Our evaluation of image and audio classification models: (a) establishes state-of-the-art performance in low SRAM usage regimes for considered tasks with up to +2.9% accuracy increase; (b) finds that a 4x memory reduction is possible by applying partial execution alone, or up to 10.5x when using the compiler-pruning co-design, while maintaining the classification accuracy compared to prior work; (c) uses the recovered SRAM to process higher resolution inputs instead, increasing accuracy by up to +3.9% on Visual Wake Words.",
+    "published": "2022-11-30",
+    "categories": [
+      "cs.LG"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2211.17246v2",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2211.17246v2.pdf",
+    "download_date": "2026-08-19T21:42:20.892805+00:00"
+  },
+  {
+    "arxiv_id": "2007.01348v1",
+    "title": "Efficient Neural Network Deployment for Microcontroller",
+    "authors": [
+      "Hasan Unlu"
+    ],
+    "abstract": "Edge computing for neural networks is getting important especially for low power applications and offline devices. TensorFlow Lite and PyTorch Mobile were released for this purpose. But they mainly support mobile devices instead of microcontroller level yet. Microcontroller support is an emerging area now. There are many approaches to reduce network size and compute load like pruning, binarization and layer manipulation i.e. operator reordering. This paper is going to explore and generalize convolution neural network deployment for microcontrollers with two novel optimization proposals offering memory saving and compute efficiency in 2D convolutions as well as fully connected layers. The first one is in-place max-pooling, if the stride is greater than or equal to pooling kernel size. The second optimization is to use ping-pong buffers between layers to reduce memory consumption significantly. The memory savings and performance will be compared with CMSIS-NN framework developed for ARM Cortex-M CPUs. The final purpose is to develop a tool consuming PyTorch model with trained network weights, and it turns into an optimized inference engine(forward pass) in C/C++ for low memory(kilobyte level) and limited computing capable microcontrollers.",
+    "published": "2020-07-02",
+    "categories": [
+      "cs.AR",
+      "cs.LG"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2007.01348v1",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2007.01348v1.pdf",
+    "download_date": "2026-08-19T21:42:11.118953+00:00"
+  },
+  {
+    "arxiv_id": "2407.10734v2",
+    "title": "On-Device Training of Fully Quantized Deep Neural Networks on Cortex-M Microcontrollers",
+    "authors": [
+      "Mark Deutel",
+      "Frank Hannig",
+      "Christopher Mutschler",
+      "J\u00fcrgen Teich"
+    ],
+    "abstract": "On-device training of DNNs allows models to adapt and fine-tune to newly collected data or changing domains while deployed on microcontroller units (MCUs). However, DNN training is a resource-intensive task, making the implementation and execution of DNN training algorithms on MCUs challenging due to low processor speeds, constrained throughput, limited floating-point support, and memory constraints. In this work, we explore on-device training of DNNs for Cortex-M MCUs. We present a method that enables efficient training of DNNs completely in place on the MCU using fully quantized training (FQT) and dynamic partial gradient updates. We demonstrate the feasibility of our approach on multiple vision and time-series datasets and provide insights into the tradeoff between training accuracy, memory overhead, energy, and latency on real hardware.",
+    "published": "2024-07-15",
+    "categories": [
+      "cs.LG",
+      "cs.AI"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2407.10734v2",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2407.10734v2.pdf",
+    "download_date": "2026-08-19T21:42:27.177555+00:00"
+  },
+  {
+    "arxiv_id": "2603.15106v2",
+    "title": "PrototypeNAS: Rapid Design of Deep Neural Networks for Microcontroller Units",
+    "authors": [
+      "Mark Deutel",
+      "Simon Geis",
+      "Axel Plinge"
+    ],
+    "abstract": "Enabling efficient deep neural network (DNN) inference on edge devices with different hardware constraints is a challenging task that typically requires DNN architectures to be specialized for each device separately. To avoid the huge manual effort, one can use neural architecture search (NAS). However, many existing NAS methods are resource-intensive and time-consuming because they require the training of many different DNNs from scratch. Furthermore, they do not take the resource constraints of the target system into account. To address these shortcomings, we propose PrototypeNAS, a zero-shot NAS method to accelerate and automate the selection, compression, and specialization of DNNs to different target microcontroller units (MCUs). We propose a novel three-step search method that decouples DNN design and specialization from DNN training for a given target platform. First, we present a novel search space that not only cuts out smaller DNNs from a single large architecture, but instead combines the structural optimization of multiple architecture types, as well as optimization of their pruning and quantization configurations. Second, we explore the use of an ensemble of zero-shot proxies during optimization instead of a single one. Third, we propose the use of Hypervolume subset selection to distill DNN architectures from the Pareto front of the multi-objective optimization that represent the most meaningful tradeoffs between accuracy and FLOPs. We evaluate the effectiveness of PrototypeNAS on 12 different datasets in three different tasks: image classification, time series classification, and object detection. Our results demonstrate that PrototypeNAS is able to identify DNN models within minutes that are small enough to be deployed on off-the-shelf MCUs and still achieve accuracies comparable to the performance of large DNN models.",
+    "published": "2026-03-16",
+    "categories": [
+      "cs.AI"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2603.15106v2",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2603.15106v2.pdf",
+    "download_date": "2026-08-19T21:42:36.587428+00:00"
+  },
+  {
+    "arxiv_id": "2105.13331v2",
+    "title": "Quantization and Deployment of Deep Neural Networks on Microcontrollers",
+    "authors": [
+      "Pierre-Emmanuel Novac",
+      "Ghouthi Boukli Hacene",
+      "Alain Pegatoquet",
+      "Beno\u00eet Miramond",
+      "Vincent Gripon"
+    ],
+    "abstract": "Embedding Artificial Intelligence onto low-power devices is a challenging task that has been partly overcome with recent advances in machine learning and hardware design. Presently, deep neural networks can be deployed on embedded targets to perform different tasks such as speech recognition,object detection or Human Activity Recognition. However, there is still room for optimization of deep neural networks onto embedded devices. These optimizations mainly address power consumption,memory and real-time constraints, but also an easier deployment at the edge. Moreover, there is still a need for a better understanding of what can be achieved for different use cases. This work focuses on quantization and deployment of deep neural networks onto low-power 32-bit microcontrollers. The quantization methods, relevant in the context of an embedded execution onto a microcontroller, are first outlined. Then, a new framework for end-to-end deep neural networks training, quantization and deployment is presented. This framework, called MicroAI, is designed as an alternative to existing inference engines (TensorFlow Lite for Microcontrollers and STM32CubeAI). Our framework can indeed be easily adjusted and/or extended for specific use cases. Execution using single precision 32-bit floating-point as well as fixed-point on 8- and 16-bit integers are supported. The proposed quantization method is evaluated with three different datasets (UCI-HAR, Spoken MNIST and GTSRB). Finally, a comparison study between MicroAI and both existing embedded inference engines is provided in terms of memory and power efficiency. On-device evaluation is done using ARM Cortex-M4F-based microcontrollers (Ambiq Apollo3 and STM32L452RE).",
+    "published": "2021-05-27",
+    "categories": [
+      "cs.LG",
+      "eess.SP"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2105.13331v2",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2105.13331v2.pdf",
+    "download_date": "2026-08-19T21:42:17.414070+00:00"
+  },
+  {
+    "arxiv_id": "2303.10702v1",
+    "title": "Evaluation of Convolution Primitives for Embedded Neural Networks on 32-bit Microcontrollers",
+    "authors": [
+      "Baptiste Nguyen",
+      "Pierre-Alain Moellic",
+      "Sylvain Blayac"
+    ],
+    "abstract": "Deploying neural networks on constrained hardware platforms such as 32-bit microcontrollers is a challenging task because of the large memory, computing and energy requirements of their inference process. To tackle these issues, several convolution primitives have been proposed to make the standard convolution more computationally efficient. However, few of these primitives are really implemented for 32-bit microcontrollers. In this work, we collect different state-of-the-art convolutional primitives and propose an implementation for ARM Cortex-M processor family with an open source deployment platform (NNoM). Then, we carry out experimental characterization tests on these implementations. Our benchmark reveals a linear relationship between theoretical MACs and energy consumption. Thus showing the advantages of using computationally efficient primitives like shift convolution. We discuss about the significant reduction in latency and energy consumption due to the use of SIMD instructions and highlight the importance of data reuse in those performance gains. For reproducibility purpose and further experiments, codes and experiments are publicly available.",
+    "published": "2023-03-19",
+    "categories": [
+      "cs.LG",
+      "cs.AR"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2303.10702v1",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2303.10702v1.pdf",
+    "download_date": "2026-08-19T21:42:24.030524+00:00"
+  },
+  {
+    "arxiv_id": "2106.10652v1",
+    "title": "TinyML: Analysis of Xtensa LX6 microprocessor for Neural Network Applications by ESP32 SoC",
+    "authors": [
+      "Md Ziaul Haque Zim"
+    ],
+    "abstract": "In recent decades, Machine Learning (ML) has become extremely important for many computing applications. The pervasiveness of ultra-low-power embedded devices such as ESP32 or ESP32 Cam with tiny Machine Learning (tinyML) applications will enable the mass proliferation of Artificial Intelligent powered Embedded IoT Devices. In the last few years, the microcontroller device (Espressif ESP32) became powerful enough to be used for small/tiny machine learning (tinyML) tasks. The ease of use of platforms like Arduino IDE, MicroPython and TensorFlow Lite (TF) with tinyML application make it an indispensable topic of research for mobile robotics, modern computer science and electrical engineering. The goal of this paper is to analyze the speed of the Xtensa dual core 32-bit LX6 microprocessor by running a neural network application. The different number of inputs (9, 36, 144 and 576) inputted through the different number of neurons in neural networks with one and two hidden layers. Xtensa LX6 microprocessor has been analyzed because it comes inside with Espressif ESP32 and ESP32 Cam which are very easy to use, plug and play IoT device. In this paper speed of the Xtensa LX6 microprocessor in feed-forward mode has been analyzed.",
+    "published": "2021-06-20",
+    "categories": [
+      "cs.LG",
+      "cs.AR"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2106.10652v1",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2106.10652v1.pdf",
+    "download_date": "2026-08-19T21:42:39.741987+00:00"
+  },
+  {
+    "arxiv_id": "2506.10851v1",
+    "title": "Energy-Efficient Deep Learning for Traffic Classification on Microcontrollers",
+    "authors": [
+      "Adel Chehade",
+      "Edoardo Ragusa",
+      "Paolo Gastaldo",
+      "Rodolfo Zunino"
+    ],
+    "abstract": "In this paper, we present a practical deep learning (DL) approach for energy-efficient traffic classification (TC) on resource-limited microcontrollers, which are widely used in IoT-based smart systems and communication networks. Our objective is to balance accuracy, computational efficiency, and real-world deployability. To that end, we develop a lightweight 1D-CNN, optimized via hardware-aware neural architecture search (HW-NAS), which achieves 96.59% accuracy on the ISCX VPN-NonVPN dataset with only 88.26K parameters, a 20.12K maximum tensor size, and 10.08M floating-point operations (FLOPs). Moreover, it generalizes across various TC tasks, with accuracies ranging from 94% to 99%. To enable deployment, the model is quantized to INT8, suffering only a marginal 1-2% accuracy drop relative to its Float32 counterpart. We evaluate real-world inference performance on two microcontrollers: the high-performance STM32F746G-DISCO and the cost-sensitive Nucleo-F401RE. The deployed model achieves inference latencies of 31.43ms and 115.40ms, with energy consumption of 7.86 mJ and 29.10 mJ per inference, respectively. These results demonstrate the feasibility of on-device encrypted traffic analysis, paving the way for scalable, low-power IoT security solutions.",
+    "published": "2025-06-12",
+    "categories": [
+      "cs.NI",
+      "cs.LG"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2506.10851v1",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2506.10851v1.pdf",
+    "download_date": "2026-08-19T21:42:33.426784+00:00"
+  },
+  {
+    "arxiv_id": "2011.14325v1",
+    "title": "XpulpNN: Enabling Energy Efficient and Flexible Inference of Quantized Neural Network on RISC-V based IoT End Nodes",
+    "authors": [
+      "Angelo Garofalo",
+      "Giuseppe Tagliavini",
+      "Francesco Conti",
+      "Luca Benini",
+      "Davide Rossi"
+    ],
+    "abstract": "This work introduces lightweight extensions to the RISC-V ISA to boost the efficiency of heavily Quantized Neural Network (QNN) inference on microcontroller-class cores. By extending the ISA with nibble (4-bit) and crumb (2-bit) SIMD instructions, we are able to show near-linear speedup with respect to higher precision integer computation on the key kernels for QNN computation. Also, we propose a custom execution paradigm for SIMD sum-of-dot-product operations, which consists of fusing a dot product with a load operation, with an up to 1.64x peak MAC/cycle improvement compared to a standard execution scenario. To further push the efficiency, we integrate the RISC-V extended core in a parallel cluster of 8 processors, with near-linear improvement with respect to a single core architecture. To evaluate the proposed extensions, we fully implement the cluster of processors in GF22FDX technology. QNN convolution kernels on a parallel cluster implementing the proposed extension run 6 x and 8 x faster when considering 4- and 2-bit data operands, respectively, compared to a baseline processing cluster only supporting 8-bit SIMD instructions. With a peak of 2.22 TOPs/s/W, the proposed solution achieves efficiency levels comparable with dedicated DNN inference accelerators, and up to three orders of magnitude better than state-of-the-art ARM Cortex-M based microcontroller systems such as the low-end STM32L4 MCU and the high-end STM32H7 MCU.",
+    "published": "2020-11-29",
+    "categories": [
+      "cs.AR"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2011.14325v1",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2011.14325v1.pdf",
+    "download_date": "2026-08-19T21:42:47.644255+00:00"
+  },
+  {
+    "arxiv_id": "2101.08744v3",
+    "title": "Enabling Large Neural Networks on Tiny Microcontrollers with Swapping",
+    "authors": [
+      "Hongyu Miao",
+      "Felix Xiaozhu Lin"
+    ],
+    "abstract": "Running neural networks (NNs) on microcontroller units (MCUs) is becoming increasingly important, but is very difficult due to the tiny SRAM size of MCU. Prior work proposes many algorithm-level techniques to reduce NN memory footprints, but all at the cost of sacrificing accuracy and generality, which disqualifies MCUs for many important use cases. We investigate a system solution for MCUs to execute NNs out of core: dynamically swapping NN data chunks between an MCU's tiny SRAM and its large, low-cost external flash. Out-of-core NNs on MCUs raise multiple concerns: execution slowdown, storage wear out, energy consumption, and data security. We present a study showing that none is a showstopper; the key benefit -- MCUs being able to run large NNs with full accuracy and generality -- triumphs the overheads. Our findings suggest that MCUs can play a much greater role in edge intelligence.",
+    "published": "2021-01-14",
+    "categories": [
+      "cs.AR",
+      "cs.OS"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2101.08744v3",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/2101.08744v3.pdf",
+    "download_date": "2026-08-19T21:42:50.815547+00:00"
+  },
+  {
+    "arxiv_id": "1911.03314v3",
+    "title": "FANN-on-MCU: An Open-Source Toolkit for Energy-Efficient Neural Network Inference at the Edge of the Internet of Things",
+    "authors": [
+      "Xiaying Wang",
+      "Michele Magno",
+      "Lukas Cavigelli",
+      "Luca Benini"
+    ],
+    "abstract": "The growing number of low-power smart devices in the Internet of Things is coupled with the concept of \"Edge Computing\", that is moving some of the intelligence, especially machine learning, towards the edge of the network. Enabling machine learning algorithms to run on resource-constrained hardware, typically on low-power smart devices, is challenging in terms of hardware (optimized and energy-efficient integrated circuits), algorithmic and firmware implementations. This paper presents FANN-on-MCU, an open-source toolkit built upon the Fast Artificial Neural Network (FANN) library to run lightweight and energy-efficient neural networks on microcontrollers based on both the ARM Cortex-M series and the novel RISC-V-based Parallel Ultra-Low-Power (PULP) platform. The toolkit takes multi-layer perceptrons trained with FANN and generates code targeted at execution on low-power microcontrollers either with a floating-point unit (i.e., ARM Cortex-M4F and M7F) or without (i.e., ARM Cortex M0-M3 or PULP-based processors). This paper also provides an architectural performance evaluation of neural networks on the most popular ARM Cortex-M family and the parallel RISC-V processor called Mr. Wolf. The evaluation includes experimental results for three different applications using a self-sustainable wearable multi-sensor bracelet. Experimental results show a measured latency in the order of only a few microseconds and a power consumption of few milliwatts while keeping the memory requirements below the limitations of the targeted microcontrollers. In particular, the parallel implementation on the octa-core RISC-V platform reaches a speedup of 22x and a 69% reduction in energy consumption with respect to a single-core implementation on Cortex-M4 for continuous real-time classification.",
+    "published": "2019-11-08",
+    "categories": [
+      "cs.LG",
+      "eess.SP",
+      "stat.ML"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/1911.03314v3",
+    "local_path": "/Users/abhishekrajupalathoti/Documents/Fulltime-job_application/Projects/research-assistant-rag/data/raw_pdfs/1911.03314v3.pdf",
+    "download_date": "2026-08-19T21:42:07.947177+00:00"
+  }
+]

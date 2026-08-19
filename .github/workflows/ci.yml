@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "feat/**", "fix/**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-type-check:
+    name: Lint + Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        run: pip install uv==0.4.29
+
+      - name: Install dev dependencies
+        run: uv pip install --system -e ".[dev]"
+
+      - name: Ruff lint
+        run: ruff check src/ tests/
+
+      - name: Mypy type check
+        run: mypy src/research_assistant --ignore-missing-imports
+
+  unit-tests:
+    name: Unit Tests (mocked — no live infra)
+    runs-on: ubuntu-latest
+    env:
+      # Dummy values — all external calls are mocked in unit tests
+      POSTGRES_HOST: localhost
+      POSTGRES_PASSWORD: changeme
+      OPENAI_API_KEY: sk-fake
+      ANTHROPIC_API_KEY: sk-ant-fake
+      EMBEDDING_PROVIDER: local
+      LLM_PROVIDER: openai
+      LLM_MODEL: gpt-4o-mini
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        run: pip install uv==0.4.29
+
+      - name: Install dependencies
+        run: uv pip install --system -e ".[dev]"
+
+      - name: Run unit tests (skip vector_store — requires real Postgres)
+        run: |
+          pytest tests/ \
+            --ignore=tests/test_vector_store.py \
+            -v \
+            --cov=src/research_assistant \
+            --cov-report=term-missing \
+            --cov-fail-under=60
+
+  build-images:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [lint-and-type-check, unit-tests]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build API image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile.api
+          push: false
+          tags: research-assistant-api:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build MCP server image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile.mcp
+          push: false
+          tags: research-assistant-mcp:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
