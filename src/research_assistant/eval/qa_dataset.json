@@ -1,0 +1,198 @@
+[
+  {
+    "id": "f01",
+    "category": "factual",
+    "target_papers": ["1801.06601v1"],
+    "question": "What data types does CMSIS-NN use for quantized weights vs. intermediate computation on Cortex-M CPUs, and what utility function converts between them?",
+    "ground_truth_answer": "CMSIS-NN stores weights and activations as 8-bit q7_t. Most kernel functions compute using 16-bit q15_t, so 8-bit data is converted to 16-bit via the utility function arm_q7_to_q15, which performs sign extension using the __SXTB16 instruction and, when needed, a data reordering step."
+  },
+  {
+    "id": "f02",
+    "category": "factual",
+    "target_papers": ["1801.06601v1"],
+    "question": "What performance improvements does CMSIS-NN report over baseline NN inference on Cortex-M CPUs?",
+    "ground_truth_answer": "CMSIS-NN achieves a 4.6x improvement in runtime/throughput and a 4.9x improvement in energy efficiency for a CNN targeting CIFAR-10."
+  },
+  {
+    "id": "f03",
+    "category": "factual",
+    "target_papers": ["1911.03314v3"],
+    "question": "Which two hardware platform families does FANN-on-MCU target, and what testbed device combines both?",
+    "ground_truth_answer": "FANN-on-MCU targets ARM Cortex-M microcontrollers (M4F/M7F with an FPU, M0 without) and RISC-V-based PULP (Parallel Ultra-Low-Power) microcontrollers. It is evaluated on the InfiniWolf wearable platform, which combines a Cortex-M4 processor with a PULP 'Mr. Wolf' chip."
+  },
+  {
+    "id": "f04",
+    "category": "factual",
+    "target_papers": ["2007.01348v1"],
+    "question": "What are the two specific optimizations proposed for CNN deployment on microcontrollers in Unlu's paper, and what does each target?",
+    "ground_truth_answer": "The two optimizations are: (1) in-place max-pooling, applicable when stride is greater than or equal to the pooling kernel size, and (2) ping-pong buffers used between layers. Both target reducing memory consumption during inference."
+  },
+  {
+    "id": "f05",
+    "category": "factual",
+    "target_papers": ["2010.11267v6"],
+    "question": "What empirical relationship do the MicroNets authors observe between model architecture and MCU inference latency, and how do they exploit it?",
+    "ground_truth_answer": "They observe that, on average, model latency varies linearly with operation (op) count under a uniform prior over models in the NAS search space. They exploit this by using differentiable NAS (DNAS) to search for models with low op count as a proxy for low latency and low memory usage."
+  },
+  {
+    "id": "f06",
+    "category": "factual",
+    "target_papers": ["2105.13331v2"],
+    "question": "What is MicroAI, and which existing frameworks is it positioned as an alternative to?",
+    "ground_truth_answer": "MicroAI is an open-source, end-to-end framework for deep neural network training, quantization, and deployment on low-power 32-bit microcontrollers. It is positioned as an alternative to existing inference engines, specifically TensorFlow Lite for Microcontrollers and STM32Cube.AI."
+  },
+  {
+    "id": "f07",
+    "category": "factual",
+    "target_papers": ["2211.17246v2"],
+    "question": "How does Pex reduce peak SRAM usage without changing the network's computed output?",
+    "ground_truth_answer": "Pex is a compiler that generates execution schedules with partial execution loops, splitting operator execution along the channel axis. This avoids materializing full input/output buffers in memory, producing a computationally-equivalent but more memory-efficient schedule at no extra computational cost."
+  },
+  {
+    "id": "f08",
+    "category": "factual",
+    "target_papers": ["2303.10702v1"],
+    "question": "What relationship do the authors find between theoretical MAC count and actual measured energy consumption on Cortex-M?",
+    "ground_truth_answer": "They find a linear relationship between the theoretical number of multiply-accumulate operations (MACs) and the measured energy consumption on Cortex-M hardware."
+  },
+  {
+    "id": "f09",
+    "category": "factual",
+    "target_papers": ["2407.10734v2"],
+    "question": "What two core techniques does the on-device training framework combine to enable training on Cortex-M microcontrollers?",
+    "ground_truth_answer": "The framework combines fully quantized training (FQT) and dynamic partial (sparse) gradient updates."
+  },
+  {
+    "id": "f10",
+    "category": "factual",
+    "target_papers": ["2512.09786v2"],
+    "question": "What specific inefficiency does TinyDejaVu target, and what savings does it report?",
+    "ground_truth_answer": "TinyDejaVu targets redundant recomputation caused by overlapping sliding-window inputs in sensor time-series inference. It reports saving more than 60% of RAM usage and eliminating up to 90% of redundant compute on overlapping sliding windows."
+  },
+  {
+    "id": "f11",
+    "category": "factual",
+    "target_papers": ["2506.10851v1"],
+    "question": "What accuracy and parameter count does the proposed 1D-CNN achieve on the ISCX VPN-NonVPN dataset, and what quantization is applied for deployment?",
+    "ground_truth_answer": "The 1D-CNN achieves 96.59% accuracy on the ISCX VPN-NonVPN dataset with only 88.26K parameters. For deployment it is quantized to INT8, incurring only a 1-2% accuracy drop relative to the Float32 version."
+  },
+  {
+    "id": "f12",
+    "category": "factual",
+    "target_papers": ["2011.14325v1"],
+    "question": "What sub-byte SIMD instruction extensions does XpulpNN introduce to the RISC-V ISA?",
+    "ground_truth_answer": "XpulpNN introduces nibble (4-bit) and crumb (2-bit) SIMD instruction extensions to the RISC-V ISA, aimed at accelerating quantized neural network inference on microcontroller-class PULP cores."
+  },
+  {
+    "id": "m01",
+    "category": "multi_hop",
+    "target_papers": ["2211.17246v2", "2101.08744v3", "2512.09786v2"],
+    "question": "What are three distinct hardware-level strategies used across this corpus to fit larger neural networks into constrained MCU memory?",
+    "ground_truth_answer": "Three distinct strategies are: (1) Pex's partial execution, which schedules operators to avoid materializing full buffers in SRAM; (2) the swapping-based paper's approach of offloading weights and activations to an SD card, extending usable storage beyond physical SRAM; and (3) TinyDejaVu's elimination of redundant recomputation across overlapping sliding-window inputs, reducing the working memory footprint needed for streaming sensor inference."
+  },
+  {
+    "id": "m02",
+    "category": "multi_hop",
+    "target_papers": ["1911.03314v3", "2011.14325v1"],
+    "question": "Which papers in this corpus target RISC-V/PULP platforms in addition to or instead of ARM Cortex-M?",
+    "ground_truth_answer": "FANN-on-MCU targets both ARM Cortex-M and RISC-V-based PULP platforms. XpulpNN introduces RISC-V ISA extensions specifically for PULP-class cores, without an ARM Cortex-M target."
+  },
+  {
+    "id": "m03",
+    "category": "multi_hop",
+    "target_papers": ["1801.06601v1", "2303.10702v1"],
+    "question": "How do CMSIS-NN and the convolution-primitives paper (using NNoM) differ in their approach to providing optimized NN kernels for Cortex-M?",
+    "ground_truth_answer": "CMSIS-NN is a vendor-developed (Arm) library of hand-optimized fixed-point kernels for standard NN operations on Cortex-M. The convolution-primitives paper instead collects and implements multiple state-of-the-art convolution primitive variants on the open-source NNoM deployment platform, then experimentally characterizes their relative efficiency, rather than providing one official optimized kernel set."
+  },
+  {
+    "id": "m04",
+    "category": "multi_hop",
+    "target_papers": ["1801.06601v1", "2506.10851v1", "2105.13331v2", "2011.14325v1"],
+    "question": "Across the papers that specifically discuss quantization bit-width choices, what is the most commonly used bit-width for weights, and which paper(s) go below that?",
+    "ground_truth_answer": "8-bit (INT8) quantization is the most common choice, used by CMSIS-NN, the traffic classification paper, and the MicroAI quantization framework. XpulpNN goes below this, introducing 4-bit (nibble) and 2-bit (crumb) sub-byte quantization support."
+  },
+  {
+    "id": "m05",
+    "category": "multi_hop",
+    "target_papers": ["1801.06601v1", "2506.10851v1", "1911.03314v3", "2105.13331v2"],
+    "question": "Which papers report specific quantitative accuracy/latency/energy tradeoffs from deploying on real physical MCU hardware, and what boards are used?",
+    "ground_truth_answer": "CMSIS-NN reports 79.9% accuracy on an Arm Cortex-M7 platform. The traffic classification paper reports 31.43ms/7.86mJ on an STM32F746G-DISCO and 115.40ms/29.10mJ on a Nucleo-F401RE. FANN-on-MCU is evaluated on the InfiniWolf platform (Cortex-M4 + PULP). The MicroAI quantization paper evaluates on Ambiq Apollo3 and STM32L452RE Cortex-M4F boards."
+  },
+  {
+    "id": "m06",
+    "category": "multi_hop",
+    "target_papers": ["2010.11267v6", "2603.15106v2"],
+    "question": "What role does neural architecture search (NAS) play across MicroNets and PrototypeNAS, and how do their NAS approaches differ?",
+    "ground_truth_answer": "Both use NAS to design DNN architectures fitting MCU constraints. MicroNets uses differentiable NAS (DNAS), exploiting a linear relationship between op-count and latency as a search proxy. PrototypeNAS instead uses a zero-shot approach with an ensemble of zero-shot proxies (avoiding training many candidate networks from scratch) and Hypervolume subset selection to pick architectures from the multi-objective Pareto front."
+  },
+  {
+    "id": "m07",
+    "category": "multi_hop",
+    "target_papers": ["2104.10645v1", "2303.10702v1"],
+    "question": "Which papers emphasize measurement methodology itself as a contribution, rather than proposing a new deployment technique?",
+    "ground_truth_answer": "\"Measuring What Really Matters\" is primarily focused on building an implementation-aware measurement toolchain for latency and energy on Cortex-M, arguing these effects must be measured empirically rather than predicted analytically. The convolution-primitives paper also contributes a measurement angle secondarily, via its empirical characterization of the linear relationship between theoretical MACs and measured energy."
+  },
+  {
+    "id": "m08",
+    "category": "multi_hop",
+    "target_papers": ["2211.17246v2", "2101.08744v3"],
+    "question": "How does memory-hierarchy-based reasoning (SRAM vs. Flash vs. external storage) show up differently in Pex versus the swapping-based paper?",
+    "ground_truth_answer": "Pex reasons entirely within on-chip SRAM, reducing the peak SRAM required by changing how computation is scheduled. The swapping-based paper instead reasons about extending the memory hierarchy beyond physical SRAM entirely, using external storage (an SD card) to hold weights and activations that do not fit, at the cost of increased latency and power from data transfer."
+  },
+  {
+    "id": "c01",
+    "category": "comparison",
+    "target_papers": ["2211.17246v2", "2101.08744v3"],
+    "question": "Compare how Pex and the swapping-based paper each address the SRAM capacity constraint on microcontrollers.",
+    "ground_truth_answer": "Pex reduces peak SRAM usage by changing execution scheduling (partial, channel-axis-split execution) so that full buffers never need to be materialized, at no extra computational cost. The swapping-based paper instead accommodates memory footprints larger than physical SRAM by offloading weights/activations to external storage (an SD card), which comes at the cost of increased latency and power consumption from data transfer."
+  },
+  {
+    "id": "c02",
+    "category": "comparison",
+    "target_papers": ["1911.03314v3", "2011.14325v1"],
+    "question": "Compare the target hardware platforms of FANN-on-MCU and XpulpNN. Where do they overlap and where do they diverge?",
+    "ground_truth_answer": "Both papers touch RISC-V/PULP-class hardware. They diverge in that FANN-on-MCU also explicitly supports ARM Cortex-M (both with and without an FPU), making it a cross-architecture toolkit, while XpulpNN is specifically a set of RISC-V ISA extensions and has no ARM Cortex-M target."
+  },
+  {
+    "id": "c03",
+    "category": "comparison",
+    "target_papers": ["2010.11267v6", "2603.15106v2"],
+    "question": "Compare MicroNets and PrototypeNAS as two different neural architecture search approaches for MCU deployment. What does each optimize for, and how do their search strategies differ?",
+    "ground_truth_answer": "MicroNets uses differentiable NAS (DNAS), optimizing for low operation count as a linear proxy for latency and energy on MCUs. PrototypeNAS instead uses a zero-shot NAS approach that avoids training candidate networks from scratch, combining an ensemble of zero-shot proxies with Hypervolume subset selection over a multi-objective Pareto front to select architectures balancing accuracy and FLOPs across multiple task types."
+  },
+  {
+    "id": "c04",
+    "category": "comparison",
+    "target_papers": ["1801.06601v1", "2007.01348v1"],
+    "question": "Compare CMSIS-NN and the 'Efficient Neural Network Deployment for Microcontroller' paper (Unlu). Both target Cortex-M efficiency, but through what different mechanisms?",
+    "ground_truth_answer": "CMSIS-NN achieves efficiency through hand-optimized fixed-point kernel implementations (e.g., q7_t/q15_t data type handling, SIMD/MAC instruction use) for standard NN layer types. Unlu's paper instead achieves efficiency through memory-layout optimizations at a higher level -- in-place max-pooling and ping-pong buffers between layers -- and explicitly benchmarks its memory savings against the CMSIS-NN framework."
+  },
+  {
+    "id": "n01",
+    "category": "negative",
+    "target_papers": [],
+    "question": "What is the best recipe for chocolate chip cookies?",
+    "ground_truth_answer": "This question is unrelated to the corpus (TinyML/embedded ML deployment research) and should be declined rather than answered."
+  },
+  {
+    "id": "n02",
+    "category": "negative",
+    "target_papers": [],
+    "question": "How do transformer-based large language models handle attention over long context windows?",
+    "ground_truth_answer": "This question is about LLM attention mechanisms, which is outside the scope of this corpus (MCU-class TinyML inference/training papers) and should be declined rather than answered from general knowledge."
+  },
+  {
+    "id": "n03",
+    "category": "negative",
+    "target_papers": [],
+    "question": "What GPU architectures are best suited for training large neural networks from scratch?",
+    "ground_truth_answer": "This question is about GPU training infrastructure, which is outside the scope of this corpus (entirely focused on MCU-class inference/training, not GPU training), and should be declined."
+  },
+  {
+    "id": "n04",
+    "category": "negative",
+    "target_papers": [],
+    "question": "Which microcontroller platform is cheapest to manufacture at scale?",
+    "ground_truth_answer": "This question is about MCU manufacturing economics, which none of the papers in this corpus address (they focus on ML deployment techniques, not manufacturing cost), and should be declined rather than have a cost figure fabricated."
+  }
+]

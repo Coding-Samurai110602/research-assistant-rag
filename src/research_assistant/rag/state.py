@@ -24,6 +24,7 @@ class Citation(TypedDict):
     section_title: str
     page: int
     chunk_id: int
+    text: str  # raw chunk text — needed by RAGAS context_precision/context_recall
 
 
 class GraphState(TypedDict):

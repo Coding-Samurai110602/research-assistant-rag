@@ -237,6 +237,7 @@ def generate(state: GraphState) -> dict:
                 "section_title": c["section_title"],
                 "page": c["page"],
                 "chunk_id": c["id"],
+                "text": c["text"],  # preserved for RAGAS context metrics
             })
             seen_ids.add(c["id"])
 
