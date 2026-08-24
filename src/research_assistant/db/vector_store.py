@@ -17,6 +17,7 @@ Embedding model choice (documented here per Stage 3 requirement):
 
 from __future__ import annotations
 
+import functools
 from datetime import UTC, datetime
 from typing import Protocol
 
@@ -28,12 +29,20 @@ from research_assistant.db.models import Base, Chunk, Paper
 from research_assistant.ingestion.arxiv_client import PaperMetadata
 from research_assistant.ingestion.chunker import Chunk as ChunkData
 
-
 class EmbeddingFn(Protocol):
     def __call__(self, texts: list[str]) -> list[list[float]]: ...
 
 
+@functools.lru_cache(maxsize=1)
 def _get_embedding_fn() -> EmbeddingFn:
+    """
+    Return the embedding callable for the configured provider.
+
+    Decorated with lru_cache so the SentenceTransformer (local path) is loaded
+    from disk exactly once per process — not once per query. Without caching,
+    every call to retrieve() triggered a full model reload, which caused the
+    'Loading weights' progress bar and ~1-2s latency on each request.
+    """
     if settings.embedding_provider == "openai":
         from openai import OpenAI
         client = OpenAI(api_key=settings.openai_api_key)

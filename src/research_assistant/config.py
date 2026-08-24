@@ -1,3 +1,5 @@
+import os
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -21,6 +23,7 @@ class Settings(BaseSettings):
     # Embedding
     embedding_provider: str = "local"  # "local" | "openai"
     openai_api_key: str = ""
+    hf_token: str = ""  # optional — silences the unauthenticated HF Hub warning
 
     # LLM
     llm_provider: str = "openai"  # "openai" | "anthropic"
@@ -44,3 +47,9 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+# Set HF_TOKEN immediately at import time — before any huggingface_hub import
+# can initialise without it. Direct assignment (not setdefault) so a shell-level
+# empty HF_TOKEN= export cannot silently win over the .env value.
+if settings.hf_token:
+    os.environ["HF_TOKEN"] = settings.hf_token

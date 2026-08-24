@@ -1,5 +1,5 @@
 """
-PDF full-text extraction using PyMuPDF (fitz).
+PDF full-text extraction using PyMuPDF.
 
 Handles multi-column academic PDF layout by sorting text blocks by
 (column, y-position) rather than raw y-position alone. Reading order:
@@ -18,7 +18,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-import fitz  # PyMuPDF
+import pymupdf
 
 
 @dataclass
@@ -136,7 +136,7 @@ def _sort_blocks_reading_order(blocks: list[dict], page_width: float) -> list[di
 
 
 def parse_pdf(pdf_path: Path, arxiv_id: str) -> ParsedDocument:
-    doc = fitz.open(str(pdf_path))
+    doc = pymupdf.open(str(pdf_path))
     parsed = ParsedDocument(arxiv_id=arxiv_id, total_pages=len(doc))
 
     in_references = False

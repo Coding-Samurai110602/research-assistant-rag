@@ -1,0 +1,28 @@
+# syntax=docker/dockerfile:1.7
+FROM python:3.11-slim AS base
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_SYSTEM_PYTHON=1
+
+RUN pip install --no-cache-dir uv==0.4.29
+
+WORKDIR /app
+
+FROM base AS final
+
+RUN groupadd --gid 1001 appgroup && \
+    useradd --uid 1001 --gid appgroup --shell /bin/bash --create-home appuser
+
+WORKDIR /app
+
+COPY pyproject.toml ./
+RUN uv pip install --no-cache --system .
+
+COPY src/ ./src/
+
+USER appuser
+
+EXPOSE 8001
+
+CMD ["python", "-m", "research_assistant.mcp_server.server"]

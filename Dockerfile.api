@@ -1,0 +1,38 @@
+# syntax=docker/dockerfile:1.7
+FROM python:3.11-slim AS base
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_SYSTEM_PYTHON=1
+
+# Install uv
+RUN pip install --no-cache-dir uv==0.4.29
+
+WORKDIR /app
+
+# ── Dependency layer (cached unless pyproject.toml changes) ──────────────────
+FROM base AS deps
+COPY pyproject.toml ./
+# Install only production deps (no dev extras)
+RUN uv pip install --no-cache ".[" --system 2>/dev/null || \
+    uv pip install --no-cache -e . --system
+
+# ── Final image ───────────────────────────────────────────────────────────────
+FROM base AS final
+
+# Non-root user
+RUN groupadd --gid 1001 appgroup && \
+    useradd --uid 1001 --gid appgroup --shell /bin/bash --create-home appuser
+
+WORKDIR /app
+
+COPY pyproject.toml ./
+RUN uv pip install --no-cache --system .
+
+COPY src/ ./src/
+
+USER appuser
+
+EXPOSE 8000
+
+CMD ["uvicorn", "research_assistant.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
