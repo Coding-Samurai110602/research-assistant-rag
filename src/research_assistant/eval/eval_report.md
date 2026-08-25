@@ -4,14 +4,13 @@
 
 | Metric | Score |
 |---|---|
-| Faithfulness | 0.778 |
-| Answer Relevance | 0.912 |
-| Context Precision | 0.378 |
-| Context Recall | 0.715 |
-| Decline Rate (negatives) | 25% (1/4) |
+| Faithfulness | 0.817 |
+| Answer Relevance | 0.710 |
+| Context Precision | 0.464 |
+| Context Recall | 0.691 |
+| Decline Rate (negatives) | 50% |
 
-**Dataset**: 28 questions (4 deliberate negatives); 24 non-negative questions fed to RAGAS,
-4 negatives tracked separately for decline_rate only.
+**Dataset**: 28 questions (4 deliberate negatives)
 
 ## Metric Definitions
 
@@ -23,104 +22,67 @@
 
 ## Interpretation Notes
 
-### Aggregate scores
+### ⚠ No verified clean eval run exists against the post-chunking-fix corpus
 
-Faithfulness (0.778) and Answer Relevance (0.912) are the more reliable headline numbers
-from this run. Faithfulness at 0.78 reflects a pipeline that largely stays grounded in
-retrieved context — one outlier (f08, discussed below) accounts for a meaningful fraction
-of the shortfall. Answer Relevance at 0.91 is consistently high across all question
-categories, indicating the system is answering the question that was asked rather than
-drifting off-topic.
+Two eval runs were conducted after the chunking fix. Neither can be treated as a verified,
+complete result. **No post-fix RAGAS numbers should be cited in any summary, README, resume,
+or interview context until a clean re-run is completed.**
 
-Context Precision (0.378) is the metric that looks alarming but requires a caveat before
-being treated as a retrieval quality signal. Inspection of the per-question breakdown
-shows that context_precision is near-zero for every multi_hop and comparison question (12
-out of 24 rows score 0.0), while factual questions score well (median ≈ 0.95). This
-split is not a retrieval failure: manual inspection of several multi_hop and comparison
-answers confirmed they were substantively accurate, well-cited, and drew on the correct
-papers. The issue is structural: RAGAS's context_precision metric grades each retrieved
-chunk by asking an LLM whether it alone is "relevant to the ground truth." Multi-paper
-synthesis questions require chunks from multiple papers simultaneously — no single chunk
-is sufficient on its own — so the LLM grader frequently marks individual chunks as
-irrelevant even when the set of chunks together supports a complete answer. This is a
-documented limitation of this metric on multi-hop retrieval tasks. Context Precision
-should not be used to characterise retrieval quality for this pipeline without
-stratifying by question type.
+#### Run 1 — `eval_report_raw_1787638321.json` (Aug 25, 02:12) — provenance uncertain
 
-Context Recall (0.715) is a more honest signal. The zero-recall cases (f08, m04, m05)
-are genuine partial misses: the retrieval pipeline found related but incomplete evidence,
-and the ground-truth answer contained claims the retrieved context didn't cover. These
-are real retrieval gaps, not scoring artefacts, and point to questions where richer
-ground-truth coverage of the corpus would help.
+- Produced with the old `run_eval.py` before per-question reporting was added; contains no
+  `per_question` breakdown.
+- No stdout log was captured, so we cannot confirm or rule out the same credit-exhaustion
+  failure mode that was directly observed in Run 2.
+- Its `answer_relevancy: 0.716` sits suspiciously close to Run 2's documented-contaminated
+  `0.710`, rather than near the ~0.90 expected for a clean, complete run. This is
+  **circumstantial evidence of the same failure mode — not confirmed**, but enough to disqualify
+  this file as a verified clean result.
+- `decline_rate: 0.75` (3/4 correctly declined) is plausible and internally consistent, but
+  cannot be treated as authoritative without corroboration from a clean run.
 
-### Decline rate: 25% (1/4) and the three missed declines
+#### Run 2 — `eval_report_raw_1787639642.json` (Aug 25, 02:34) — contamination confirmed
 
-Only n01 ("What is the best recipe for chocolate chip cookies?") was correctly declined.
-The three misses warrant individual characterisation:
+This run experienced Anthropic API credit exhaustion partway through the RAGAS metric
+computation phase. RAGAS's internal grading calls started failing with
+`AnthropicInvalidRequestError: credit balance too low` during the final batch of jobs.
 
-**n02** ("How do transformer-based large language models handle attention over long context
-windows?") and **n03** ("What GPU architectures are best suited for training large neural
-networks from scratch?") both show non-deterministic behaviour across runs: in manual
-re-runs both returned `answerable=False` with the correct refusal message. During the
-eval run they returned `answerable=True`, likely because the embedding of "attention" or
-"GPU training" is close enough to MCU/neural-network content in the corpus that retrieval
-surfaced tangentially related chunks, the relevance grader passed them, and generation
-proceeded before the retry loop exhausted. These are genuinely borderline questions —
-they involve neural networks and hardware, which overlaps significantly with corpus
-vocabulary — rather than simple off-topic queries.
+**Affected questions and symptoms:**
 
-**n04** ("Which microcontroller platform is cheapest to manufacture at scale?") is the
-most instructive miss. The system retrieved a real passage from MicroNets listing unit
-prices for three STM32 boards ($3, $5, $8) and identified the F446RE as cheapest. It then
-added an explicit hedge: *"the passage only provides unit price figures, not manufacturing
-cost at scale — the paper does not specify manufacturing costs or how prices might change
-with scale."* The system correctly characterised the limits of its evidence; it should
-have declined outright, but the hedge demonstrates grounded reasoning rather than
-fabrication. The groundedness check flagged the response False, correctly. This case
-illustrates that a clean decline/answer binary is imperfect for questions that are
-partially answerable from corpus data.
+| id | category | answer_relevancy | faithfulness | cause |
+|---|---|---|---|---|
+| m03 | multi_hop | 0.0 (artifactual) | 0.88 (ok) | answer_relevancy LLM call failed |
+| m08 | multi_hop | 0.0 (artifactual) | 0.77 (ok) | answer_relevancy LLM call failed |
+| c01 | comparison | 0.0 (artifactual) | null | both LLM calls failed |
+| c02 | comparison | 0.99 (ok) | null | faithfulness LLM call failed |
+| c03 | comparison | 0.0 (artifactual) | null | both LLM calls failed |
+| c04 | comparison | 0.0 (artifactual) | null | both LLM calls failed |
 
-### f08: accurate answer, faithfulness 0.0 — a worked example of RAGAS grader sensitivity
+RAGAS returns 0.0 (not null) when its answer_relevancy synthetic-question generation fails and
+`raise_exceptions=False` is set. These are grading infrastructure failures, not low-quality
+answers. **The reported 0.710 answer_relevancy aggregate is not credible and should not be
+cited.** Excluding the 5 artifactually-zeroed questions, the remaining 19 questions average
+~0.896, consistent with the pre-fix run (0.912) and within normal LLM run-to-run variance.
 
-Question: *"What relationship do the authors find between theoretical MAC count and actual
-measured energy consumption on Cortex-M?"*
+### What can be stated with confidence
 
-Ground truth: "They find a linear relationship between the theoretical number of
-multiply-accumulate operations (MACs) and the measured energy consumption on Cortex-M
-hardware."
+- The chunking fix (structural header detection + Roman numeral section support) corrected
+  content loss and mislabeling in 13 of 15 papers. That is a code-level fact, verified by the
+  before/after audit scripts, independent of any eval run.
+- The pre-chunking-fix eval (`eval_report_PRECHUNKFIX.md`) reported `decline_rate: 25%` (1/4).
+  Both post-fix runs show higher decline rates (0.75 and 0.50 respectively), suggesting a
+  genuine improvement, but the inconsistency between the two runs means this cannot be stated
+  as a confirmed delta yet.
+- No post-fix metric (faithfulness, answer_relevancy, context_precision, context_recall) should
+  be cited as a final number anywhere — README, resume, or interview — until a clean re-run
+  with a full API budget and captured stdout log confirms the results.
 
-The generated answer correctly synthesised findings from two papers: the convolution-
-primitives paper (2303.10702v1) establishing that theoretical MACs is a relevant
-indicator of layer energy for non-SIMD Cortex-M devices, and MicroNets (2010.11267v6)
-establishing that energy is a linear function of op count at the whole-model level via
-near-constant power draw (σ/µ = 0.00731 across 400 sampled models). Both citations were
-correct and the synthesis was accurate.
+### Required next step
 
-Despite this, the answer scored faithfulness=0.0 and context_recall=0.0. Three
-contributing factors were identified by inspection:
-
-1. **Irrelevant retrieved chunk**: Citation 1 was a FANN-on-MCU chunk (1911.03314v3)
-   containing energy measurements for a different system. This gave the RAGAS faithfulness
-   grader a context passage that couldn't support several of the answer's claims, likely
-   causing the whole-answer faithfulness score to collapse rather than being applied
-   claim-by-claim as intended.
-
-2. **Truncated chunk**: Citation 2 (2303.10702v1 p.9 Conclusion) was cut off mid-sentence
-   at a token boundary, ending before the SIMD vs. non-SIMD comparison completed. The
-   grader could not verify the SIMD-qualified claim against an incomplete passage.
-
-3. **Terminology mismatch**: The ground truth uses "MACs" (multiply-accumulate
-   operations); the MicroNets paper uses "ops." These are synonymous in context but
-   RAGAS's LLM-graded recall check failed to treat them as equivalent, producing
-   context_recall=0.0 despite Citation 4 containing the exact linear relationship
-   described in the ground truth.
-
-This case is representative of a general pattern: RAGAS's LLM-graded metrics are
-sensitive to retrieval noise (one bad chunk among three good ones), chunk boundary
-artefacts (incomplete sentences at token limits), and paraphrase distance between ground
-truth wording and paper wording. These are real limitations of the evaluation harness,
-not failures of the RAG pipeline. Manual inspection of f08's answer confirmed it was
-accurate, grounded, and correctly cited.
+Re-run the full 28-question eval with sufficient API budget to complete all 96 RAGAS grading
+jobs cleanly, with stdout captured. Verify: no `AnthropicInvalidRequestError` or `TimeoutError`
+lines appear in the log, and all 24 non-negative `per_question` entries have non-null,
+non-zero scores for all four metrics. Only then should any aggregate be cited.
 
 ## Raw Scores
 

@@ -77,7 +77,9 @@ def run_eval(dataset_path: Path, output_path: Path) -> dict[str, Any]:
     if not qa_pairs:
         raise ValueError(f"No valid Q&A pairs found in {dataset_path}")
 
-    questions, answers, ground_truths, contexts, negative_results = [], [], [], [], []
+    questions, answers, ground_truths, contexts = [], [], [], []
+    negative_results = []
+    non_negative_pairs: list[dict] = []  # parallel to the RAGAS dataset rows, in order
 
     for qa in qa_pairs:
         question = qa["question"]
@@ -92,6 +94,7 @@ def run_eval(dataset_path: Path, output_path: Path) -> dict[str, Any]:
             answers.append(result.answer)
             ground_truths.append(ground_truth)
             contexts.append([c["text"] for c in result.citations] if result.citations else [""])
+            non_negative_pairs.append(qa)
 
         if is_negative:
             negative_results.append({
@@ -131,6 +134,22 @@ def run_eval(dataset_path: Path, output_path: Path) -> dict[str, Any]:
     # _repr_dict holds pre-computed per-metric means (avoids .mean() on mixed-type DataFrame)
     scores_dict = dict(scores._repr_dict)
 
+    # Per-row scores from the RAGAS result DataFrame — same row order as non_negative_pairs
+    import math
+    scores_df = scores.to_pandas()
+    metric_cols = ["faithfulness", "answer_relevancy", "context_precision", "context_recall"]
+    per_question = []
+    for qa, (_, row) in zip(non_negative_pairs, scores_df.iterrows()):
+        entry: dict = {
+            "id": qa.get("id", ""),
+            "question": qa["question"],
+            "category": qa.get("category", ""),
+        }
+        for col in metric_cols:
+            val = row.get(col)
+            entry[col] = None if (val is None or (isinstance(val, float) and math.isnan(val))) else round(float(val), 4)
+        per_question.append(entry)
+
     decline_count = sum(1 for r in negative_results if r["correctly_declined"])
     decline_rate = decline_count / len(negative_results) if negative_results else None
 
@@ -140,6 +159,7 @@ def run_eval(dataset_path: Path, output_path: Path) -> dict[str, Any]:
         "n_questions": len(qa_pairs),
         "n_negative": len(negative_results),
         "negative_detail": negative_results,
+        "per_question": per_question,
     }
 
     # Write raw JSON dump (gitignored intermediate artifact)
