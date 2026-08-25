@@ -1,0 +1,11 @@
+{
+  "dataset": "28 questions (4 deliberate negatives)",
+  "metrics": [
+    { "name": "Faithfulness",       "score": 0.840, "description": "Fraction of answer claims supported by retrieved context. 1.0 = zero hallucinations." },
+    { "name": "Answer Relevance",   "score": 0.674, "description": "Cosine similarity between question and answer embeddings. Measures topical alignment." },
+    { "name": "Context Precision",  "score": 0.445, "description": "Of retrieved chunks, fraction that are actually relevant (retrieval signal-to-noise)." },
+    { "name": "Context Recall",     "score": 0.688, "description": "Does retrieved context cover all information needed for the ground-truth answer?" },
+    { "name": "Decline Rate",       "score": 0.500, "description": "Percentage of out-of-scope questions correctly refused rather than hallucinated." }
+  ],
+  "note": "answer_relevancy = 0.0 on 6/24 non-negative multi-hop/comparison questions is intentional: the system adds epistemic caveats that RAGAS marks as noncommittal. Use faithfulness and context_recall as primary metrics for those categories."
+}
