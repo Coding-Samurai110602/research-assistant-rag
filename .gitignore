@@ -38,3 +38,5 @@ Thumbs.db
 
 # Eval artifacts — keep templates + report; gitignore intermediate JSON dumps
 src/research_assistant/eval/eval_report_raw_*.json
+.coverage
+eval_run_clean.log
