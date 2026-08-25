@@ -8,16 +8,22 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
 cd "$ROOT_DIR"
 
-echo "=== Stage 1: arXiv download ==="
-python -c "
+METADATA="$ROOT_DIR/data/metadata.json"
+
+if [[ -s "$METADATA" ]]; then
+    echo "=== Stage 1: arXiv download — SKIPPED (data/metadata.json exists and is non-empty) ==="
+else
+    echo "=== Stage 1: arXiv download ==="
+    uv run --no-sync python -c "
 from research_assistant.ingestion.arxiv_client import run_ingestion
 papers = run_ingestion()
 print(f'Downloaded {len(papers)} papers')
 "
+fi
 
 echo ""
 echo "=== Stage 2-3: Parse, chunk, embed, store ==="
-python -c "
+uv run --no-sync python -c "
 import json
 from pathlib import Path
 from sqlalchemy.orm import Session
@@ -46,3 +52,4 @@ for meta in papers:
 
 print('Ingestion complete.')
 "
+

@@ -16,10 +16,13 @@ RUN groupadd --gid 1001 appgroup && \
 
 WORKDIR /app
 
-COPY pyproject.toml ./
+COPY pyproject.toml README.md ./
+COPY src/ ./src/
 RUN uv pip install --no-cache --system .
 
-COPY src/ ./src/
+ENV HF_HOME=/opt/huggingface
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-small-en-v1.5')" && \
+    chown -R appuser:appgroup /opt/huggingface
 
 USER appuser
 
