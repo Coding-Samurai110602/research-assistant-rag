@@ -29,6 +29,7 @@ from research_assistant.db.models import Base, Chunk, Paper
 from research_assistant.ingestion.arxiv_client import PaperMetadata
 from research_assistant.ingestion.chunker import Chunk as ChunkData
 
+
 class EmbeddingFn(Protocol):
     def __call__(self, texts: list[str]) -> list[list[float]]: ...
 
@@ -83,7 +84,11 @@ def insert_paper(session: Session, meta: PaperMetadata) -> Paper:
         title=meta.title,
         authors=meta.authors,
         abstract=meta.abstract,
-        published=datetime.fromisoformat(meta.published.replace("Z", "+00:00")) if meta.published else None,
+        published=(
+            datetime.fromisoformat(meta.published.replace("Z", "+00:00"))
+            if meta.published
+            else None
+        ),
         categories=meta.categories,
         arxiv_url=meta.arxiv_url,
         local_path=meta.local_path,
@@ -108,7 +113,8 @@ def insert_chunks(
     for i in range(0, len(texts), batch_size):
         batch_texts = texts[i : i + batch_size]
         batch_vecs = embed_fn(batch_texts)
-        for j, (cd, vec) in enumerate(zip(chunk_data[i : i + batch_size], batch_vecs)):
+        batch_pairs = zip(chunk_data[i : i + batch_size], batch_vecs, strict=True)
+        for _j, (cd, vec) in enumerate(batch_pairs):
             db_chunks.append(
                 Chunk(
                     paper_id=paper.id,

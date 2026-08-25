@@ -33,7 +33,9 @@ class Paper(Base):
     download_date: Mapped[datetime | None] = mapped_column()
     created_at: Mapped[datetime | None] = mapped_column()
 
-    chunks: Mapped[list[Chunk]] = relationship("Chunk", back_populates="paper", cascade="all, delete")
+    chunks: Mapped[list[Chunk]] = relationship(
+        "Chunk", back_populates="paper", cascade="all, delete"
+    )
 
 
 class Chunk(Base):

@@ -64,8 +64,12 @@ def search_arxiv(query: str, max_results: int = 5, start: int = 0) -> list[dict]
         arxiv_id_raw = entry.findtext("atom:id", default="", namespaces=_NS)
         arxiv_id = arxiv_id_raw.split("/abs/")[-1].strip()
 
-        title = (entry.findtext("atom:title", default="", namespaces=_NS) or "").replace("\n", " ").strip()
-        abstract = (entry.findtext("atom:summary", default="", namespaces=_NS) or "").replace("\n", " ").strip()
+        title = (
+            entry.findtext("atom:title", default="", namespaces=_NS) or ""
+        ).replace("\n", " ").strip()
+        abstract = (
+            entry.findtext("atom:summary", default="", namespaces=_NS) or ""
+        ).replace("\n", " ").strip()
         published = entry.findtext("atom:published", default="", namespaces=_NS) or ""
 
         authors = [

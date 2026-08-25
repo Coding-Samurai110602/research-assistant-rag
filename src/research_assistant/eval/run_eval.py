@@ -59,19 +59,20 @@ def _patch_ragas_vertexai_import() -> None:
 
 def run_eval(dataset_path: Path, output_path: Path) -> dict[str, Any]:
     _patch_ragas_vertexai_import()
+    from langchain_anthropic import ChatAnthropic
+    from langchain_community.embeddings import HuggingFaceEmbeddings
     from ragas import evaluate
+
     # ragas 0.4.x split metrics into two tiers:
     #   - ragas.metrics.collections.*  (new-style, require OpenAI via instructor library)
     #   - ragas.metrics._*             (old-style, accept any LangChain LLM via llm= injection)
     # We use the old-style tier so we can inject our Anthropic LLM via evaluate(llm=...).
-    from ragas.metrics._faithfulness import faithfulness
+    from ragas.embeddings.base import LangchainEmbeddingsWrapper
+    from ragas.llms.base import LangchainLLMWrapper
     from ragas.metrics._answer_relevance import answer_relevancy
     from ragas.metrics._context_precision import context_precision
     from ragas.metrics._context_recall import context_recall
-    from ragas.llms.base import LangchainLLMWrapper
-    from ragas.embeddings.base import LangchainEmbeddingsWrapper
-    from langchain_anthropic import ChatAnthropic
-    from langchain_community.embeddings import HuggingFaceEmbeddings
+    from ragas.metrics._faithfulness import faithfulness
 
     qa_pairs = load_dataset(dataset_path)
     if not qa_pairs:
@@ -139,7 +140,7 @@ def run_eval(dataset_path: Path, output_path: Path) -> dict[str, Any]:
     scores_df = scores.to_pandas()
     metric_cols = ["faithfulness", "answer_relevancy", "context_precision", "context_recall"]
     per_question = []
-    for qa, (_, row) in zip(non_negative_pairs, scores_df.iterrows()):
+    for qa, (_, row) in zip(non_negative_pairs, scores_df.iterrows(), strict=True):
         entry: dict = {
             "id": qa.get("id", ""),
             "question": qa["question"],
@@ -147,7 +148,11 @@ def run_eval(dataset_path: Path, output_path: Path) -> dict[str, Any]:
         }
         for col in metric_cols:
             val = row.get(col)
-            entry[col] = None if (val is None or (isinstance(val, float) and math.isnan(val))) else round(float(val), 4)
+            entry[col] = (
+                None
+                if (val is None or (isinstance(val, float) and math.isnan(val)))
+                else round(float(val), 4)
+            )
         per_question.append(entry)
 
     decline_count = sum(1 for r in negative_results if r["correctly_declined"])

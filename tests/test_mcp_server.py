@@ -18,11 +18,8 @@ import pytest
 from mcp import types
 
 from research_assistant.core import PaperSummary, RAGResponse
-from research_assistant.mcp_server.server import (
-    _on_call_tool,
-    _on_list_tools,
-    app as mcp_app,
-)
+from research_assistant.mcp_server.server import _on_call_tool, _on_list_tools
+from research_assistant.mcp_server.server import app as mcp_app
 
 MOCK_RESPONSE = RAGResponse(
     answer="MCUNet uses INT8 post-training quantization.",
@@ -91,7 +88,10 @@ async def test_query_research_papers_tool():
         arguments={"question": "What is TinyML?"},
     )
 
-    with patch("research_assistant.mcp_server.server.answer_question", return_value=MOCK_RESPONSE) as mock_core:
+    with patch(
+        "research_assistant.mcp_server.server.answer_question",
+        return_value=MOCK_RESPONSE,
+    ) as mock_core:
         result = await _on_call_tool(ctx, params)
 
     assert mock_core.called
@@ -107,7 +107,10 @@ async def test_list_ingested_papers_tool():
     ctx = MagicMock()
     params = types.CallToolRequestParams(name="list_ingested_papers", arguments=None)
 
-    with patch("research_assistant.mcp_server.server.list_ingested_papers", return_value=MOCK_PAPERS):
+    with patch(
+        "research_assistant.mcp_server.server.list_ingested_papers",
+        return_value=MOCK_PAPERS,
+    ):
         result = await _on_call_tool(ctx, params)
 
     assert isinstance(result, types.CallToolResult)

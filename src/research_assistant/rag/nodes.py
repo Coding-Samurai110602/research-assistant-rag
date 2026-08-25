@@ -196,7 +196,10 @@ def generate(state: GraphState) -> dict:
     graded = state.get("graded_chunks", [])
     if not graded:
         return {
-            "answer": "The provided papers do not contain enough information to answer this question.",
+            "answer": (
+                "The provided papers do not contain enough information"
+                " to answer this question."
+            ),
             "citations": [],
             "answerable": False,
         }

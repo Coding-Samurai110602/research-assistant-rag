@@ -109,8 +109,9 @@ def test_token_count_within_limit():
         (LONG_SECTION * 2, "body", 2),
     ])
     chunks = chunk_document(doc)
-    oversized = [c for c in chunks if c.token_count > MAX_TOKENS + 20]  # +20 tolerance for detokenize roundtrip
-    assert not oversized, f"Chunks exceed MAX_TOKENS: {[(c.chunk_index, c.token_count) for c in oversized]}"
+    # +20 tolerance for detokenize roundtrip
+    oversized = [c for c in chunks if c.token_count > MAX_TOKENS + 20]
+    assert not oversized, f"Chunks exceed MAX_TOKENS: {[(c.chunk_index, c.token_count) for c in oversized]}"  # noqa: E501
 
 
 def test_overlap_carry_does_not_overflow():

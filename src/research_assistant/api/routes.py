@@ -53,7 +53,7 @@ def query(request: QueryRequest) -> QueryResponse:
     try:
         result: RAGResponse = answer_question(request.question)
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     return QueryResponse(
         answer=result.answer,
@@ -73,5 +73,5 @@ def papers() -> list[PaperOut]:
     try:
         result = list_ingested_papers()
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=str(exc))
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
     return [PaperOut(**vars(p)) for p in result]

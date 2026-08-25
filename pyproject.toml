@@ -75,3 +75,8 @@ plugins = ["pydantic.mypy"]
 asyncio_mode = "auto"
 testpaths = ["tests"]
 filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+# eval/run_eval.py is a manually-triggered integration script (real LLM + DB calls).
+# There is no meaningful unit-test path through it; omit rather than artificially pad.
+omit = ["*/eval/run_eval.py"]

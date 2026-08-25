@@ -37,7 +37,7 @@ def _base_state(**overrides) -> GraphState:
 
 def test_analyze_query_first_pass():
     mock_llm = MagicMock()
-    mock_llm.return_value.content = '{"query_type": "factual", "rewritten_query": "MCUNet quantization technique"}'
+    mock_llm.return_value.content = '{"query_type": "factual", "rewritten_query": "MCUNet quantization technique"}'  # noqa: E501
 
     with (
         patch("research_assistant.rag.nodes._get_llm", return_value=mock_llm),
@@ -56,7 +56,9 @@ def test_analyze_query_on_retry_uses_rewrite_prompt():
 
     with patch("research_assistant.rag.nodes._get_llm", return_value=mock_llm):
         from research_assistant.rag.nodes import analyze_query
-        result = analyze_query(_base_state(retry_count=1, rewritten_query="MCUNet quantization technique"))
+        result = analyze_query(
+            _base_state(retry_count=1, rewritten_query="MCUNet quantization technique")
+        )
 
     # On retry, rewritten_query should be the raw LLM string (no JSON parsing)
     assert "MCUNet" in result["rewritten_query"] or result["rewritten_query"]
@@ -68,9 +70,11 @@ def test_analyze_query_on_retry_uses_rewrite_prompt():
 def test_grade_relevance_filters_irrelevant():
     chunks = [
         {"id": 1, "arxiv_id": "2401.00001", "section_title": "Method", "page": 2,
-         "block_type": "body", "text": "MCUNet uses INT8 quantization on Cortex-M4.", "token_count": 8, "distance": 0.1},
+         "block_type": "body", "text": "MCUNet uses INT8 quantization on Cortex-M4.",
+         "token_count": 8, "distance": 0.1},
         {"id": 2, "arxiv_id": "2401.00002", "section_title": "Intro", "page": 1,
-         "block_type": "body", "text": "General deep learning surveys.", "token_count": 5, "distance": 0.5},
+         "block_type": "body", "text": "General deep learning surveys.",
+         "token_count": 5, "distance": 0.5},
     ]
 
     call_count = 0
@@ -106,7 +110,8 @@ def test_generate_with_no_graded_chunks_returns_decline():
 def test_generate_with_chunks_returns_answer():
     chunks = [
         {"id": 1, "arxiv_id": "2401.00001", "section_title": "Method", "page": 2,
-         "block_type": "body", "text": "MCUNet uses 8-bit quantization.", "token_count": 7, "distance": 0.1},
+         "block_type": "body", "text": "MCUNet uses 8-bit quantization.",
+         "token_count": 7, "distance": 0.1},
     ]
     mock_llm = MagicMock()
     mock_llm.return_value.content = "MCUNet uses 8-bit integer quantization (2401.00001, Method)."

@@ -107,7 +107,10 @@ async def _on_call_tool(
     if params.name == "list_ingested_papers":
         papers = list_ingested_papers()
         return types.CallToolResult(
-            content=[types.TextContent(type="text", text=json.dumps([vars(p) for p in papers], indent=2))]
+            content=[types.TextContent(
+                type="text",
+                text=json.dumps([vars(p) for p in papers], indent=2),
+            )]
         )
 
     return types.CallToolResult(

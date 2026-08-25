@@ -84,6 +84,9 @@ def test_papers_list():
 
 
 def test_query_core_exception_returns_500():
-    with patch("research_assistant.api.routes.answer_question", side_effect=RuntimeError("DB down")):
+    with patch(
+        "research_assistant.api.routes.answer_question",
+        side_effect=RuntimeError("DB down"),
+    ):
         resp = client.post("/query", json={"question": "anything"})
     assert resp.status_code == 500

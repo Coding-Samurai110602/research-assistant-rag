@@ -180,7 +180,11 @@ def _chunk_text_with_overlap(
             # Without this guard, a 420-token paragraph would produce a buffer of
             # 67 + 420 = 487 tokens, silently truncated by the embedding model.
             safe_overlap = min(OVERLAP_TOKENS, max(0, MAX_TOKENS - len(para_tokens)))
-            buffer_tokens = buffer_tokens[-safe_overlap:] + para_tokens if safe_overlap else list(para_tokens)
+            buffer_tokens = (
+                buffer_tokens[-safe_overlap:] + para_tokens
+                if safe_overlap
+                else list(para_tokens)
+            )
         else:
             buffer_tokens.extend(para_tokens)
 
