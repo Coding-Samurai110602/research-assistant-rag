@@ -70,8 +70,11 @@ def _detokenize(tokens: list[int]) -> str:
     return _ENC.decode(tokens)
 
 
+_ROMAN_NUMERAL_RE = r"(?:X{0,2}(?:I{1,3}|IV|VI{0,3}|IX)|X)"
+
 _SECTION_HEADER_RE = re.compile(
-    r"^(\d+\.?\s+[A-Z][A-Za-z\s]+|"
+    r"^(" + _ROMAN_NUMERAL_RE + r"\.?\s+[A-Z][A-Za-z\s]+|"
+    r"\d+\.?\s+[A-Z][A-Za-z\s]+|"
     r"\b(?:Abstract|Introduction|Related Work|Background|Methodology|Method|"
     r"Approach|Experiments|Evaluation|Results|Discussion|Conclusion|"
     r"Acknowledgements?|References)\b)",

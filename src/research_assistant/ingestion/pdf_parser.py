@@ -47,8 +47,25 @@ class ParsedDocument:
 
 _CAPTION_RE = re.compile(r"^(Fig(?:ure)?\.?\s*\d|Table\s+\d)", re.IGNORECASE)
 _TABLE_RE = re.compile(r"^Table\s+\d", re.IGNORECASE)
-_HEADER_RE = re.compile(r"^(\d+\.?\s+[A-Z]|\b(?:Abstract|Introduction|Conclusion|References|Related Work|Methodology|Experiments|Results|Evaluation)\b)")
+# Roman numerals I–XIX (covers any realistic section count in a paper).
+# Case-sensitive by design: "IV." is a section number, "iv." is not.
+_ROMAN_NUMERAL_RE = r"(?:X{0,2}(?:I{1,3}|IV|VI{0,3}|IX)|X)"
+_HEADER_RE = re.compile(
+    r"^(\d+\.?\s+[A-Z]|" + _ROMAN_NUMERAL_RE + r"\.?\s+[A-Z]"
+    r"|\b(?:Abstract|Introduction|Conclusion|References|Related Work|"
+    r"Methodology|Experiments|Results|Evaluation)\b)"
+)
 _REFERENCES_RE = re.compile(r"^\s*References\s*$", re.IGNORECASE)
+# Matches numbered/Roman headings written entirely in ALL CAPS ("1 INTRODUCTION", "II. METHODS").
+_HEADING_ALLCAPS_RE = re.compile(
+    r"^(\d+\.?\s+(?:[A-Z][A-Z\-]+\s*)+"
+    r"|" + _ROMAN_NUMERAL_RE + r"\.?\s+(?:[A-Z][A-Z\-]+\s*)+)"
+)
+# Matches section-keyword headings that may be fused with body prose.
+_HEADING_KEYWORD_RE = re.compile(
+    r"^(Abstract|Introduction|Conclusion|References|Related Work|Methodology|"
+    r"Experiments|Results|Evaluation|Background|Discussion|Approach|Method)"
+)
 
 
 def _classify_block(text: str) -> str:
@@ -56,7 +73,13 @@ def _classify_block(text: str) -> str:
     if _CAPTION_RE.match(stripped):
         return "caption" if not _TABLE_RE.match(stripped) else "table"
     if _HEADER_RE.match(stripped):
-        return "header"
+        # Structural check: a genuine heading is short.  A fused block (heading
+        # text + abstract/section body merged by the PDF typesetter into one
+        # PyMuPDF block) is always much longer — signal it for splitting so
+        # the body prose is not silently swallowed into a section-title string.
+        if len(stripped) <= 120:
+            return "header"
+        return "fused_header"
     return "body"
 
 
@@ -135,6 +158,57 @@ def _sort_blocks_reading_order(blocks: list[dict], page_width: float) -> list[di
     return ordered
 
 
+def _split_fused_block(text: str) -> tuple[str, str]:
+    """
+    Extract (heading, body) from a fused block where a section heading and its
+    body prose were merged into one PyMuPDF block by the PDF typesetter.
+
+    Strategies tried in order:
+    1. First \\n-delimited line, if short and not sentence-shaped.
+    2. ALL-CAPS numbered/Roman prefix ("1 INTRODUCTION body", "II. METHODS body").
+    3. Em-dash or double-hyphen separator (IEEE abstract: "Abstract—body").
+    4. Keyword heading separated from body by ". ", ": ", or bare whitespace.
+
+    Returns ("", full_text) when no heading is extractable — the caller then
+    treats the whole block as body to avoid losing content.
+    """
+    stripped = text.strip()
+
+    # Strategy 1: first line as heading (must be short and not sentence-shaped)
+    if "\n" in stripped:
+        first_line, rest = stripped.split("\n", 1)
+        first_line = first_line.strip()
+        if len(first_line) < 80 and "." not in first_line[:60]:
+            return first_line, rest.strip()
+
+    # Strategy 2: numbered/Roman heading with ALL-CAPS words ("1 INTRODUCTION body…")
+    m = _HEADING_ALLCAPS_RE.match(stripped)
+    if m:
+        heading = m.group(0).rstrip()
+        body = re.sub(r"^[—:\.\s]+", "", stripped[m.end():]).strip()
+        return heading, body
+
+    # Strategy 3: em-dash or double-hyphen separator ("Abstract—body")
+    for sep in ["—", "--"]:
+        if sep in stripped:
+            parts = stripped.split(sep, 1)
+            heading = parts[0].strip()
+            if len(heading) < 80:
+                return heading, parts[1].strip()
+
+    # Strategy 4: keyword heading with ". " or ": " separator within first 60 chars
+    m2 = _HEADING_KEYWORD_RE.match(stripped)
+    if m2:
+        keyword = m2.group(0)
+        body = re.sub(r"^[—:\.\s]+", "", stripped[len(keyword):]).strip()
+        if len(body) >= 10:
+            return keyword, body
+        return keyword, ""
+
+    # No reliable split found — preserve everything as body to avoid data loss
+    return "", stripped
+
+
 def parse_pdf(pdf_path: Path, arxiv_id: str) -> ParsedDocument:
     doc = pymupdf.open(str(pdf_path))
     parsed = ParsedDocument(arxiv_id=arxiv_id, total_pages=len(doc))
@@ -160,18 +234,27 @@ def parse_pdf(pdf_path: Path, arxiv_id: str) -> ParsedDocument:
                 in_references = True
 
             if in_references:
-                block_type = "reference"
-            else:
-                block_type = _classify_block(text)
-
-            parsed.blocks.append(
-                TextBlock(
-                    text=text,
-                    page=page_num,
-                    block_type=block_type,
-                    bbox=bd["bbox"],
+                parsed.blocks.append(
+                    TextBlock(text=text, page=page_num, block_type="reference", bbox=bd["bbox"])
                 )
-            )
+                continue
+
+            block_type = _classify_block(text)
+
+            if block_type == "fused_header":
+                heading, body = _split_fused_block(text)
+                if heading:
+                    parsed.blocks.append(
+                        TextBlock(text=heading, page=page_num, block_type="header", bbox=bd["bbox"])
+                    )
+                if body and len(body) >= 10:
+                    parsed.blocks.append(
+                        TextBlock(text=body, page=page_num, block_type="body", bbox=bd["bbox"])
+                    )
+            else:
+                parsed.blocks.append(
+                    TextBlock(text=text, page=page_num, block_type=block_type, bbox=bd["bbox"])
+                )
 
     doc.close()
     return parsed

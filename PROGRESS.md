@@ -183,6 +183,11 @@ Token histogram (verified with `safe_overlap` fix in place on real data):
 - Zero fires on current 15-paper corpus — all headers are PyMuPDF-detectable
 - **Revisit after Stage 6 eval**: if the log stays silent through eval, consider removing the print or converting to a `logging.debug` call to keep production output clean
 
+### Stage 6 RAGAS eval was run against a since-fixed corpus
+- The `eval_report.md` numbers (faithfulness, answer relevance, context precision, context recall) were generated against a corpus with a since-fixed chunking bug: header misclassification caused content loss or mislabeling in 13 of 15 papers — fused heading+body blocks were classified as pure headers, silently swallowing prose into section-title strings, and Roman numeral section headers (IEEE format: `I. INTRODUCTION`, `II. RELATED WORK`, etc.) were completely undetected by `_HEADER_RE`, causing entire papers to be labeled under the abstract section rather than their real sections.
+- The bug was fixed via structural heading detection (length ≤ 120 chars gate in `_classify_block`) and Roman numeral support added to `_HEADER_RE` and `_SECTION_HEADER_RE`. The corrected corpus has **725 chunks** (vs. the original 709 used during eval).
+- The eval has not yet been re-run against the corrected, re-ingested corpus. **Re-running the full RAGAS eval is a recommended next step before treating `eval_report.md`'s numbers as final or representative.**
+
 ---
 
 ## File Map (key files a new session should read first)
