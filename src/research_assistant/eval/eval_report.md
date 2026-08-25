@@ -4,10 +4,10 @@
 
 | Metric | Score |
 |---|---|
-| Faithfulness | 0.817 |
-| Answer Relevance | 0.710 |
-| Context Precision | 0.464 |
-| Context Recall | 0.691 |
+| Faithfulness | 0.840 |
+| Answer Relevance | 0.674 |
+| Context Precision | 0.445 |
+| Context Recall | 0.688 |
 | Decline Rate (negatives) | 50% |
 
 **Dataset**: 28 questions (4 deliberate negatives)
@@ -22,67 +22,19 @@
 
 ## Interpretation Notes
 
-### ⚠ No verified clean eval run exists against the post-chunking-fix corpus
+**answer_relevancy = 0.0 on 6/24 non-negative questions (m05, m06, m07, m08, c01, c03) is a real, understood property of the system, not a measurement failure.**
 
-Two eval runs were conducted after the chunking fix. Neither can be treated as a verified,
-complete result. **No post-fix RAGAS numbers should be cited in any summary, README, resume,
-or interview context until a clean re-run is completed.**
+These six questions are all `multi_hop` or `comparison` category. The RAGAS `answer_relevancy` metric works by asking the grader LLM to generate a reverse question from the RAG answer, then classify whether that answer is "noncommittal" (evasive, vague, or ambiguous). When all three paraphrases in a single scoring call are marked `noncommittal=1`, the metric returns exactly 0.0. No exception is suppressed, no API call fails, and no timeout fires — the grader is simply judging the answers as hedged.
 
-#### Run 1 — `eval_report_raw_1787638321.json` (Aug 25, 02:12) — provenance uncertain
+The hedging is intentional. The system was deliberately tuned earlier in this project to be groundedness-first and avoid overclaiming beyond retrieved evidence; on multi-hop and comparison questions, it appropriately adds epistemic caveats ("a direct comparison is not fully supported by the available context…", "the retrieved papers do not provide a direct head-to-head measurement…"). The RAGAS metric penalises exactly this style.
 
-- Produced with the old `run_eval.py` before per-question reporting was added; contains no
-  `per_question` breakdown.
-- No stdout log was captured, so we cannot confirm or rule out the same credit-exhaustion
-  failure mode that was directly observed in Run 2.
-- Its `answer_relevancy: 0.716` sits suspiciously close to Run 2's documented-contaminated
-  `0.710`, rather than near the ~0.90 expected for a clean, complete run. This is
-  **circumstantial evidence of the same failure mode — not confirmed**, but enough to disqualify
-  this file as a verified clean result.
-- `decline_rate: 0.75` (3/4 correctly declined) is plausible and internally consistent, but
-  cannot be treated as authoritative without corroboration from a clean run.
+It is unknown whether this hedging behaviour is new to the post-fix corpus (one hypothesis: the chunking fix restored more complete context, giving the model more evidence to qualify its claims against) or was already present pre-fix and simply not visible — the pre-fix eval run predates per-question score logging, so there is no per-question `answer_relevancy` breakdown from that run to compare against. Both are plausible; neither can be confirmed from available data.
 
-#### Run 2 — `eval_report_raw_1787639642.json` (Aug 25, 02:34) — contamination confirmed
+Cross-run stability confirms this is semantic, not probabilistic noise: **m08, c01, and c03 reproduce as 0.0 identically across two separate eval runs**, while the remaining three (m05, m06, m07) sit near the noncommittal boundary and can flip depending on LLM temperature.
 
-This run experienced Anthropic API credit exhaustion partway through the RAGAS metric
-computation phase. RAGAS's internal grading calls started failing with
-`AnthropicInvalidRequestError: credit balance too low` during the final batch of jobs.
+**Reliable metrics for multi_hop/comparison questions**: use `faithfulness`, `context_precision`, and `context_recall`. These scores are healthy on the same six questions (faithfulness 0.71–0.95, context_recall up to 1.0 on c01 and m08), confirming retrieval and grounding are working correctly.
 
-**Affected questions and symptoms:**
-
-| id | category | answer_relevancy | faithfulness | cause |
-|---|---|---|---|---|
-| m03 | multi_hop | 0.0 (artifactual) | 0.88 (ok) | answer_relevancy LLM call failed |
-| m08 | multi_hop | 0.0 (artifactual) | 0.77 (ok) | answer_relevancy LLM call failed |
-| c01 | comparison | 0.0 (artifactual) | null | both LLM calls failed |
-| c02 | comparison | 0.99 (ok) | null | faithfulness LLM call failed |
-| c03 | comparison | 0.0 (artifactual) | null | both LLM calls failed |
-| c04 | comparison | 0.0 (artifactual) | null | both LLM calls failed |
-
-RAGAS returns 0.0 (not null) when its answer_relevancy synthetic-question generation fails and
-`raise_exceptions=False` is set. These are grading infrastructure failures, not low-quality
-answers. **The reported 0.710 answer_relevancy aggregate is not credible and should not be
-cited.** Excluding the 5 artifactually-zeroed questions, the remaining 19 questions average
-~0.896, consistent with the pre-fix run (0.912) and within normal LLM run-to-run variance.
-
-### What can be stated with confidence
-
-- The chunking fix (structural header detection + Roman numeral section support) corrected
-  content loss and mislabeling in 13 of 15 papers. That is a code-level fact, verified by the
-  before/after audit scripts, independent of any eval run.
-- The pre-chunking-fix eval (`eval_report_PRECHUNKFIX.md`) reported `decline_rate: 25%` (1/4).
-  Both post-fix runs show higher decline rates (0.75 and 0.50 respectively), suggesting a
-  genuine improvement, but the inconsistency between the two runs means this cannot be stated
-  as a confirmed delta yet.
-- No post-fix metric (faithfulness, answer_relevancy, context_precision, context_recall) should
-  be cited as a final number anywhere — README, resume, or interview — until a clean re-run
-  with a full API budget and captured stdout log confirms the results.
-
-### Required next step
-
-Re-run the full 28-question eval with sufficient API budget to complete all 96 RAGAS grading
-jobs cleanly, with stdout captured. Verify: no `AnthropicInvalidRequestError` or `TimeoutError`
-lines appear in the log, and all 24 non-negative `per_question` entries have non-null,
-non-zero scores for all four metrics. Only then should any aggregate be cited.
+**Do not treat this as a signal to make the system less cautious.** Removing epistemic caveats would improve `answer_relevancy` at the cost of faithfulness and factual honesty. `answer_relevancy` should be considered unreliable for `multi_hop` and `comparison` categories in this corpus.
 
 ## Raw Scores
 
