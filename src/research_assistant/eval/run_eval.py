@@ -62,6 +62,7 @@ def run_eval(dataset_path: Path, output_path: Path) -> dict[str, Any]:
     from langchain_anthropic import ChatAnthropic
     from langchain_community.embeddings import HuggingFaceEmbeddings
     from ragas import evaluate
+    from ragas.dataset_schema import EvaluationResult
 
     # ragas 0.4.x split metrics into two tiers:
     #   - ragas.metrics.collections.*  (new-style, require OpenAI via instructor library)
@@ -132,6 +133,10 @@ def run_eval(dataset_path: Path, output_path: Path) -> dict[str, Any]:
         embeddings=eval_emb,
         raise_exceptions=False,
     )
+    # evaluate() returns Executor only when return_executor=True; we never set that,
+    # so this is always EvaluationResult at runtime. Assert to satisfy mypy and guard
+    # against any future change that accidentally passes return_executor=True.
+    assert isinstance(scores, EvaluationResult)
     # _repr_dict holds pre-computed per-metric means (avoids .mean() on mixed-type DataFrame)
     scores_dict = dict(scores._repr_dict)
 

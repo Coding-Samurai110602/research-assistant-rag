@@ -48,7 +48,7 @@ class PaperMetadata:
 def search_arxiv(query: str, max_results: int = 5, start: int = 0) -> list[dict]:
     """Return raw Atom entries from arXiv for a given query string."""
     url = "http://export.arxiv.org/api/query"
-    params = {
+    params: dict[str, str | int] = {
         "search_query": query,
         "max_results": max_results,
         "start": start,

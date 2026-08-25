@@ -17,6 +17,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 import pymupdf
 
@@ -214,9 +215,11 @@ def parse_pdf(pdf_path: Path, arxiv_id: str) -> ParsedDocument:
     parsed = ParsedDocument(arxiv_id=arxiv_id, total_pages=len(doc))
 
     in_references = False
-    for page_num, page in enumerate(doc, start=1):
-        page_rect = page.rect
-        raw_blocks = page.get_text("blocks")  # list of (x0,y0,x1,y1,text,block_no,block_type)
+    # pymupdf stub doesn't declare Document as Iterable and returns Any for Page attributes;
+    # both limitations are stub gaps — iteration and attribute access work correctly at runtime.
+    for page_num, page in enumerate(doc, start=1):  # type: ignore[arg-type, var-annotated]
+        page_rect: Any = page.rect
+        raw_blocks: Any = page.get_text("blocks")  # list of (x0,y0,x1,y1,text,block_no,block_type)
 
         # Convert to dicts for the sort helper
         block_dicts = [
