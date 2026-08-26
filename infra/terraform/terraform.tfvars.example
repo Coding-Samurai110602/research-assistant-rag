@@ -1,0 +1,21 @@
+# Copy to terraform.tfvars and fill in. terraform.tfvars is gitignored.
+# Secrets (db_password, *_api_key) are better passed via TF_VAR_ env vars — see README.
+
+aws_region           = "us-east-1"
+allowed_ingress_cidr = "203.0.113.7/32" # ← YOUR public IP as /32 (curl ifconfig.me)
+
+image_tag = "latest"
+
+# Sizing (start minimal; bump task_memory to 2048 if the model load OOMs)
+task_cpu          = "512"
+task_memory       = "1024"
+db_instance_class = "db.t4g.micro"
+
+llm_provider = "anthropic"
+llm_model    = "claude-sonnet-5"
+
+# Prefer env vars over putting these here:
+#   export TF_VAR_db_password=...
+#   export TF_VAR_anthropic_api_key=...   # required — sole LLM credential
+# db_password       = "..."
+# anthropic_api_key = "..."

@@ -1,4 +1,6 @@
-const BASE = 'http://localhost:8000'
+// Point the frontend at local Docker or the deployed AWS ALB without editing code:
+// set VITE_API_BASE (e.g. in frontend/.env or the build env). Falls back to local.
+const BASE = import.meta.env.VITE_API_BASE ?? 'http://localhost:8000'
 
 /**
  * POST /query
