@@ -40,3 +40,4 @@ Thumbs.db
 src/research_assistant/eval/eval_report_raw_*.json
 .coverage
 eval_run_clean.log
+INTERVIEW_PREP.md
